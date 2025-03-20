@@ -1,0 +1,27 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "user-api"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-xxx"
+s3_prefix = "user-api"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "Stage=dev"
+image_repositories = []
+
+[dev]
+[dev.deploy.parameters]
+stack_name = "user-api-dev"
+parameter_overrides = "Stage=dev"
+
+[staging]
+[staging.deploy.parameters]
+stack_name = "user-api-staging"
+parameter_overrides = "Stage=staging"
+
+[prod]
+[prod.deploy.parameters]
+stack_name = "user-api-prod"
+parameter_overrides = "Stage=prod"

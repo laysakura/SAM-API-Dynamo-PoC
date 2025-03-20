@@ -1,0 +1,35 @@
+services:
+  dynamodb:
+    image: amazon/dynamodb-local:latest
+    ports:
+      - "8000:8000"
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data/"
+    volumes:
+      - dynamodb-data:/home/dynamodblocal/data
+    networks:
+      - app-network
+
+  setup:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    environment:
+      - AWS_ENDPOINT_URL=http://dynamodb:8000
+      - DYNAMODB_TABLE=Users
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=dummy
+      - AWS_SECRET_ACCESS_KEY=dummy
+    depends_on:
+      - dynamodb
+    command: uv venv && uv sync && uv run python scripts/seed_db.py && uv run python scripts/setup_api_keys.py"
+    networks:
+      - app-network
+
+volumes:
+  dynamodb-data:
+
+networks:
+  app-network:
+    driver: bridge
